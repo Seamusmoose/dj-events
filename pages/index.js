@@ -9,11 +9,11 @@ export default function HomePage({ events }) {
       <h1>Upcoming events</h1>
       {events.length === 0 && <h3>Not Events to show</h3>}
 
-      {events.map((evt) => (
+      {events.data.map((evt) => (
         <EventItem key={evt.id} evt={evt} />
       ))}
 
-      {events.length === 0 && (
+      {events.data.length === 0 && (
         <Link href="/events">
           <a className="btn-secondary">View All Events</a>
         </Link>
@@ -22,12 +22,11 @@ export default function HomePage({ events }) {
   );
 }
 
-export async function getServerSideProps() {
-  const res = await fetch(`${API_URL}/api/events`);
+export async function getStaticProps() {
+  const res = await fetch(`${API_URL}/api/events?[populate]=*`);
   const events = await res.json();
 
   return {
-    props: { events: events.slice(0, 3) },
-    // revalidate: 1,
+    props: { events: events },
   };
 }
